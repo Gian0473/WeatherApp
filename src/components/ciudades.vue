@@ -112,7 +112,7 @@
                 </div>
             </div>
         </div>
-        <div class="flex items-center gap-2 py-12 text-white cursor-pointer duration-150 hover:text-red-500"
+        <div v-if="isCitySaved" class="flex items-center gap-2 py-12 text-white cursor-pointer duration-150 hover:text-red-500"
         @click="removeCity">
         <i class="fa-solid fa-trash-can"></i>
         <p>Borrar ciudad</p>
@@ -123,7 +123,7 @@
 <script setup>
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
-import { provide } from 'vue';
+import { computed } from 'vue';
 
 
 const router = useRouter();
@@ -177,5 +177,14 @@ const removeCity = () => {
   });
 };
 
-provide('weatherData', weatherData);
+// Función computada para verificar si la ciudad está guardada
+const isCitySaved = computed(() => {
+  const savedCities = JSON.parse(localStorage.getItem('saveCity')) || []; //obtiene las ciudades del localStorage
+  return savedCities.some(city => city.id === route.query.id);   //usa la función some para verificar si al menos
+  if (!route.query.id) return                                    //hay una coincidencia en el array, la condición
+                                                                // es que el id del localstorage coincida con el 
+                                                                //route.query.id, que es el identificador de la ciudad 
+                                                                //actualmente visualizada en la aplicación.
+});
+
 </script>
